@@ -17,7 +17,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        soupSlider.maxValue = soupAmount;
+        //soupSlider.maxValue = soupAmount;
     }
     private void Update()
     {
@@ -60,7 +60,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
             EnemyMovement.MoveEnemies();
         }
 
-        soupSlider.value = soupAmount;
+        //soupSlider.value = soupAmount;
         potTrans.rotation = Quaternion.Euler(xLean * leanMultiplier, 0, zLean * leanMultiplier);
     }
     private int MoveTowardsZero(int leanToChange)
