@@ -5,16 +5,16 @@ using UnityEngine.UI;
 
 public class TurnBasedPlayerMovement : MonoBehaviour
 {
-    public float moveDistance;
-    private int xLean;
-    private int zLean;
-    public Transform potTrans;
-    public float leanMultiplier;
-    public float maxLean;
-    public GameObject spill;
-    public int soupAmount;
-    public Slider soupSlider;
-    public LayerMask obstacleLayer;
+    float moveDistance = 1;
+    int xLean;
+    int zLean;
+    [SerializeField] Transform potTrans;
+    [SerializeField] float leanMultiplier;
+    [SerializeField] float maxLean;
+    [SerializeField] GameObject spill;
+    [SerializeField] int soupAmount;
+    [SerializeField] Slider soupSlider;
+    [SerializeField] LayerMask obstacleLayer;
 
     private void Start()
     {
@@ -76,31 +76,31 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         //soupSlider.value = soupAmount;
         potTrans.rotation = Quaternion.Euler(xLean * leanMultiplier, 0, zLean * leanMultiplier);
     }
+
+    // Stabilises the pot on a single inputted axis by bringing its lean towards zero by 1
     private int MoveTowardsZero(int leanToChange)
     {
         if (leanToChange < 0) leanToChange++;
         if (leanToChange > 0) leanToChange--;
         return leanToChange;
     }
+
+    // Checks if either axis's lean is on maxLean and if it is then spawn a spill and decrease amount of soup
     private void CheckForSpill()
     {
-        if (xLean == 3 || zLean == 3 || xLean == -3 || zLean == -3)
+        if (xLean == maxLean || zLean == maxLean || xLean == -maxLean || zLean == -maxLean)
         {
             Instantiate(spill, transform.position, Quaternion.identity);
             soupAmount--;
         }
     }
+
+    // This is what tips the pot when the player moves
     private int IncreaseLean(int currentLean, int difference)
     {
         if(difference > 0 && currentLean < maxLean || difference < 0 && currentLean > -maxLean)
             currentLean += difference;
 
         return currentLean;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawRay(transform.position, transform.right * 2);
     }
 }
