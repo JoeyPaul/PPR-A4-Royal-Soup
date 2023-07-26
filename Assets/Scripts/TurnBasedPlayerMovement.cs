@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class TurnBasedPlayerMovement : MonoBehaviour
 {
@@ -15,20 +16,27 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     [SerializeField] int soupAmount;
     [SerializeField] Slider soupSlider;
     [SerializeField] LayerMask obstacleLayer;
-
+    [SerializeField] int frames;
+    [SerializeField] float animLength;
+    bool canMove = true;
     private void Start()
     {
         //soupSlider.maxValue = soupAmount;
     }
     private void Update()
     {
+        if (!canMove)
+            return;
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             if (!Physics.Raycast(transform.position, transform.right, 1, obstacleLayer))
             {
-                xLean = MoveTowardsZero(xLean);
+                //xLean = MoveTowardsZero(xLean);
                 CheckForSpill();
-                transform.position += new Vector3(moveDistance, 0, 0);
+                Vector3 startPos = transform.position;
+                Vector3 nextPos = new Vector3(transform.position.x + moveDistance, transform.position.y, transform.position.z);
+                StartCoroutine(LerpAnim(startPos, nextPos));
                 zLean = IncreaseLean(zLean, 1);
                 EnemyMovement.MoveEnemies();
             }
@@ -37,9 +45,11 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         {
             if (!Physics.Raycast(transform.position, -transform.right, 1, obstacleLayer))
             {
-                xLean = MoveTowardsZero(xLean);
+                //xLean = MoveTowardsZero(xLean);
                 CheckForSpill();
-                transform.position += new Vector3(-moveDistance, 0, 0);
+                Vector3 startPos = transform.position;
+                Vector3 nextPos = new Vector3(transform.position.x - moveDistance, transform.position.y, transform.position.z);
+                StartCoroutine(LerpAnim(startPos, nextPos));
                 zLean = IncreaseLean(zLean, -1);
                 EnemyMovement.MoveEnemies();
             }
@@ -48,9 +58,11 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         {
             if (!Physics.Raycast(transform.position, -transform.forward, 1, obstacleLayer))
             {
-                zLean = MoveTowardsZero(zLean);
+                //zLean = MoveTowardsZero(zLean);
                 CheckForSpill();
-                transform.position += new Vector3(0, 0, -moveDistance);
+                Vector3 startPos = transform.position;
+                Vector3 nextPos = new Vector3(transform.position.x, transform.position.y, transform.position.z - moveDistance);
+                StartCoroutine(LerpAnim(startPos, nextPos));
                 xLean = IncreaseLean(xLean, 1);
                 EnemyMovement.MoveEnemies();
             }
@@ -59,9 +71,11 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         {
             if (!Physics.Raycast(transform.position, transform.forward, 1, obstacleLayer))
             {
-                zLean = MoveTowardsZero(zLean);
+                //zLean = MoveTowardsZero(zLean);
                 CheckForSpill();
-                transform.position += new Vector3(0, 0, moveDistance);
+                Vector3 startPos = transform.position;
+                Vector3 nextPos = new Vector3 (transform.position.x, transform.position.y, transform.position.z + moveDistance);
+                StartCoroutine(LerpAnim(startPos, nextPos));
                 xLean = IncreaseLean(xLean, -1);
                 EnemyMovement.MoveEnemies();
             }
@@ -72,11 +86,27 @@ public class TurnBasedPlayerMovement : MonoBehaviour
             zLean = MoveTowardsZero(zLean);
             EnemyMovement.MoveEnemies();
         }
-
+        
         //soupSlider.value = soupAmount;
         potTrans.rotation = Quaternion.Euler(xLean * leanMultiplier, 0, zLean * leanMultiplier);
     }
-
+    private IEnumerator LerpAnim(Vector3 startPos, Vector3 nextPos)
+    {
+        StartCoroutine(MoveCooldown());
+        for (int i = 0; i < frames; i++)
+        {
+            //print(Vector3.Lerp(startPos, nextPos, i / frames));
+            transform.position = Vector3.Lerp(startPos, nextPos, i / (float)frames);
+            yield return new WaitForSeconds(animLength / frames);
+        }
+        transform.position = nextPos;
+    }
+    private IEnumerator MoveCooldown()
+    {
+        canMove = false;
+        yield return new WaitForSeconds(animLength);
+        canMove = true;
+    }
     // Stabilises the pot on a single inputted axis by bringing its lean towards zero by 1
     private int MoveTowardsZero(int leanToChange)
     {
@@ -100,7 +130,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     {
         if(difference > 0 && currentLean < maxLean || difference < 0 && currentLean > -maxLean)
             currentLean += difference;
-
+    
         return currentLean;
     }
 }

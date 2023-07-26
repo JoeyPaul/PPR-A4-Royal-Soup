@@ -113,33 +113,33 @@ public class EnemyMovement : MonoBehaviour
         switch (rand)
         {
             case 0:
-                if (!hasDetectedObstacle(Vector3.right))
+                if (!HasDetectedObstacle(Vector3.right))
                     transform.position += Vector3.right;
                 break;
             case 1:
-                if (!hasDetectedObstacle(-Vector3.right))
+                if (!HasDetectedObstacle(-Vector3.right))
                     transform.position += -Vector3.right;
                 break;
             case 2:
-                if (!hasDetectedObstacle(Vector3.forward))
+                if (!HasDetectedObstacle(Vector3.forward))
                     transform.position += Vector3.forward;
                 break;
             case 3:
-                if (!hasDetectedObstacle(-Vector3.forward))
+                if (!HasDetectedObstacle(-Vector3.forward))
                     transform.position += -Vector3.forward;
                 break;
         }
     }
 
-    bool hasDetectedObstacle(Vector3 moveDir)
+    bool HasDetectedObstacle(Vector3 moveDir)
     {
         if (moveDir == Vector3.zero) return false;
         else
-            return rayCollisionDetected(moveDir);
+            return RayCollisionDetected(moveDir);
     }
 
     // Shoots a ray in the direction checking for collisions with the obstacle layer
-    bool rayCollisionDetected(Vector3 direction)
+    bool RayCollisionDetected(Vector3 direction)
     {
         if (Physics.Raycast(transform.position, direction, 1, obstacleLayer))
         {
