@@ -42,59 +42,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         if (!canMove)
             return;
 
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            if (!Physics.Raycast(transform.position, transform.right, 1, obstacleLayer))
-            {
-                //xLean = MoveTowardsZero(xLean);
-                CheckForSpill();
-                Vector3 startPos = transform.position;
-                Vector3 nextPos = new Vector3(transform.position.x + moveDistance, transform.position.y, transform.position.z);
-                StartCoroutine(LerpAnim(startPos, nextPos));
-                zLean = IncreaseLean(zLean, 1);
-                EnemyMovement.MoveEnemies();
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            if (!Physics.Raycast(transform.position, -transform.right, 1, obstacleLayer))
-            {
-                //xLean = MoveTowardsZero(xLean);
-                CheckForSpill();
-                Vector3 startPos = transform.position;
-                Vector3 nextPos = new Vector3(transform.position.x - moveDistance, transform.position.y, transform.position.z);
-                StartCoroutine(LerpAnim(startPos, nextPos));
-                zLean = IncreaseLean(zLean, -1);
-                EnemyMovement.MoveEnemies();
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            if (!Physics.Raycast(transform.position, -transform.forward, 1, obstacleLayer))
-            {
-                //zLean = MoveTowardsZero(zLean);
-                CheckForSpill();
-                Vector3 startPos = transform.position;
-                Vector3 nextPos = new Vector3(transform.position.x, transform.position.y, transform.position.z - moveDistance);
-                StartCoroutine(LerpAnim(startPos, nextPos));
-                xLean = IncreaseLean(xLean, 1);
-                EnemyMovement.MoveEnemies();
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            if (!Physics.Raycast(transform.position, transform.forward, 1, obstacleLayer))
-            {
-                //zLean = MoveTowardsZero(zLean);
-                CheckForSpill();
-                Vector3 startPos = transform.position;
-                Vector3 nextPos = new Vector3 (transform.position.x, transform.position.y, transform.position.z + moveDistance);
-                StartCoroutine(LerpAnim(startPos, nextPos));
-                xLean = IncreaseLean(xLean, -1);
-                EnemyMovement.MoveEnemies();
-            }
-        }
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             xLean = MoveTowardsZero(xLean);
             zLean = MoveTowardsZero(zLean);
@@ -104,21 +52,32 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         soupSlider.value = soupAmount;
         potTrans.rotation = Quaternion.Euler(xLean * leanMultiplier, 0, zLean * leanMultiplier);
     }
+
+    // I simplified the WASD movement into one function which is now called by the PlayerPointerBehaviour script whenever the player clicks on a pointer.
+    public void MovePlayer(Vector3 moveDirection)
+    {
+        if (!Physics.Raycast(transform.position, moveDirection, 1, obstacleLayer) && canMove)
+        {
+            canMove = false;
+            CheckForSpill();
+            Vector3 startPos = transform.position;
+            Vector3 nextPos = transform.position + moveDirection;
+            StartCoroutine(LerpAnim(startPos, nextPos));
+            xLean = IncreaseLean(xLean, -(int)moveDirection.z);
+            zLean = IncreaseLean(zLean, (int)moveDirection.x);
+            EnemyMovement.MoveEnemies();
+        }
+    }
+
+    // Linearly Interpolates our transform between the start pos and the next pos over the course of animLength seconds.
     private IEnumerator LerpAnim(Vector3 startPos, Vector3 nextPos)
     {
-        StartCoroutine(MoveCooldown());
         for (int i = 0; i < frames; i++)
         {
-            //print(Vector3.Lerp(startPos, nextPos, i / frames));
             transform.position = Vector3.Lerp(startPos, nextPos, i / (float)frames);
             yield return new WaitForSeconds(animLength / frames);
         }
         transform.position = nextPos;
-    }
-    private IEnumerator MoveCooldown()
-    {
-        canMove = false;
-        yield return new WaitForSeconds(animLength);
         canMove = true;
     }
     // Stabilises the pot on a single inputted axis by bringing its lean towards zero by 1
