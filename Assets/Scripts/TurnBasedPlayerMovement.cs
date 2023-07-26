@@ -20,8 +20,21 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     [SerializeField] int frames;
     [SerializeField] float animLength;
     bool canMove = true;
+
+    public bool arrivedAtKing;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Destination"))
+        {
+            //print("Player collided with the destination collider!");
+            arrivedAtKing = true;
+        }
+    }
+
     private void Start()
     {
+        arrivedAtKing = false;
         soupSlider.maxValue = soupAmount;
     }
     private void Update()
