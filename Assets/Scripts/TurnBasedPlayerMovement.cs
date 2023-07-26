@@ -14,6 +14,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     [SerializeField] float maxLean;
     [SerializeField] GameObject spill;
     [SerializeField] int soupAmount;
+    [SerializeField] [Range(0, 20)] int soupSpillAmount;
     [SerializeField] Slider soupSlider;
     [SerializeField] LayerMask obstacleLayer;
     [SerializeField] int frames;
@@ -21,7 +22,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     bool canMove = true;
     private void Start()
     {
-        //soupSlider.maxValue = soupAmount;
+        soupSlider.maxValue = soupAmount;
     }
     private void Update()
     {
@@ -87,7 +88,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
             EnemyMovement.MoveEnemies();
         }
         
-        //soupSlider.value = soupAmount;
+        soupSlider.value = soupAmount;
         potTrans.rotation = Quaternion.Euler(xLean * leanMultiplier, 0, zLean * leanMultiplier);
     }
     private IEnumerator LerpAnim(Vector3 startPos, Vector3 nextPos)
@@ -121,7 +122,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         if (xLean == maxLean || zLean == maxLean || xLean == -maxLean || zLean == -maxLean)
         {
             Instantiate(spill, transform.position, Quaternion.identity);
-            soupAmount--;
+            soupAmount -= soupSpillAmount;
         }
     }
 
