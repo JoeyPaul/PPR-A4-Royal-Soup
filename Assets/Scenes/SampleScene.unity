@@ -862,7 +862,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &349082648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1093,6 +1093,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 818366176}
+  freeLookCamera: {fileID: 349082647}
 --- !u!4 &438329389
 Transform:
   m_ObjectHideFlags: 0
@@ -1359,7 +1360,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 663418105}
-  m_LocalRotation: {x: 0.16202533, y: 0.6780094, z: -0.15703277, w: 0.6995654}
+  m_LocalRotation: {x: 0.1620253, y: 0.67800945, z: -0.15703279, w: 0.69956535}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
