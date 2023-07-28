@@ -16,11 +16,15 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     [SerializeField] int soupAmount;
     [SerializeField] [Range(0, 20)] int soupSpillAmount;
     [SerializeField] Slider soupSlider;
+
     [SerializeField] LayerMask obstacleLayer;
     [SerializeField] int frames;
     [SerializeField] float animLength;
-    bool canMove = true;
 
+    [SerializeField] Transform spriteTransform;
+    [SerializeField] Transform cameraTransform;
+
+    bool canMove = true;
     public bool arrivedAtKing;
 
     private void OnTriggerEnter(Collider other)
@@ -42,6 +46,9 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         if (!canMove)
             return;
 
+        // Make the sprite face towards the camera
+        SpriteFaceToCamera();
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             xLean = MoveTowardsZero(xLean);
@@ -51,6 +58,19 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         
         soupSlider.value = soupAmount;
         potTrans.rotation = Quaternion.Euler(xLean * leanMultiplier, 0, zLean * leanMultiplier);
+    }
+
+    private void SpriteFaceToCamera()
+    {
+        // Make the sprite face towards the camera
+        Vector3 directionToCamera = cameraTransform.position - spriteTransform.position;
+        directionToCamera.y = 0f;
+        if (directionToCamera != Vector3.zero)
+        {
+            // Face towards the target on the Y-axis
+            Quaternion targetRotation = Quaternion.LookRotation(directionToCamera);
+            spriteTransform.rotation = targetRotation;
+        }
     }
 
     // I simplified the WASD movement into one function which is now called by the PlayerPointerBehaviour script whenever the player clicks on a pointer.
