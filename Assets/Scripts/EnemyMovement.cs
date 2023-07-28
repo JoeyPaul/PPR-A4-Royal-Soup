@@ -59,11 +59,12 @@ public class EnemyMovement : MonoBehaviour
                 break;
         }
         // Check to see if enemy collided with player, push player. 
-        OnPlayerCollision();
+        StartCoroutine(OnPlayerCollision());
     }
 
-    void OnPlayerCollision()
+    IEnumerator OnPlayerCollision()
     {
+        yield return new WaitForSeconds(player.animLength + 0.3f);
         if (this.transform.position == player.transform.position)
         {
             player.MovePlayerOnly(currentDirection);

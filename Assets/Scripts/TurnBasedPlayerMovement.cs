@@ -19,7 +19,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
 
     [SerializeField] LayerMask obstacleLayer;
     [SerializeField] int frames;
-    [SerializeField] float animLength;
+    public float animLength;
 
     [SerializeField] Transform spriteTransform;
     [SerializeField] Transform cameraTransform;
