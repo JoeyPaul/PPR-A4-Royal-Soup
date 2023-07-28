@@ -89,6 +89,45 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         }
     }
 
+    // Almost the same as the MovePlayer function, although it checks for a collision free direction to move in. 
+    // It will then move them in the respective direction.
+    public void MovePlayerOnly(Vector3 enemyMoveDirection)
+    {
+        Vector3 moveDirection = GetCollisionFreeDirection(enemyMoveDirection);
+        if (!Physics.Raycast(transform.position, moveDirection, 1, obstacleLayer) && canMove)
+        {
+            canMove = false;
+            CheckForSpill();
+            Vector3 startPos = transform.position;
+            Vector3 nextPos = transform.position + moveDirection;
+            StartCoroutine(LerpAnim(startPos, nextPos));
+            xLean = IncreaseLean(xLean, -(int)moveDirection.z);
+            zLean = IncreaseLean(zLean, (int)moveDirection.x);
+        }
+    }
+
+    private Vector3 GetCollisionFreeDirection(Vector3 moveDirection) 
+    {
+        // Check 4 cardinal directions for collision objects
+        if (!Physics.Raycast(transform.position, transform.right, 1, obstacleLayer))
+        {
+            return transform.right;
+        }
+        else if (!Physics.Raycast(transform.position, transform.forward, 1, obstacleLayer))
+        {
+            return transform.forward;
+        }
+        else if (!Physics.Raycast(transform.position, -transform.right, 1, obstacleLayer))
+        {
+            return -transform.right;
+        }
+        else if (!Physics.Raycast(transform.position, -transform.right, 1, obstacleLayer))
+        {
+            return -transform.forward;
+        }
+        return moveDirection;
+    }
+
     // Linearly Interpolates our transform between the start pos and the next pos over the course of animLength seconds.
     private IEnumerator LerpAnim(Vector3 startPos, Vector3 nextPos)
     {

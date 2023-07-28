@@ -12,6 +12,10 @@ public class EnemyMovement : MonoBehaviour
     private Transform currentNode;
     private int currentNodeIterator;
 
+    private Vector3 currentDirection;
+
+    [SerializeField] TurnBasedPlayerMovement player;
+
     public enum EnemyType
     {
         Waiter,
@@ -53,6 +57,16 @@ public class EnemyMovement : MonoBehaviour
                 break;
             case EnemyType.None:
                 break;
+        }
+        // Check to see if enemy collided with player, push player. 
+        OnPlayerCollision();
+    }
+
+    void OnPlayerCollision()
+    {
+        if (this.transform.position == player.transform.position)
+        {
+            player.MovePlayerOnly(currentDirection);
         }
     }
 
@@ -96,11 +110,13 @@ public class EnemyMovement : MonoBehaviour
             {
                 // Move the enemy in the direction that is closer to the node. 
                 // using the ternary operator to correct the movement vector to a fixed integer value
-                transform.position += new Vector3((Mathf.Abs(x - (-1f)) < Mathf.Abs(x - 1f)) ? -1f : 1f, 0, 0);
+                currentDirection = new Vector3((Mathf.Abs(x - (-1f)) < Mathf.Abs(x - 1f)) ? -1f : 1f, 0, 0);
+                transform.position += currentDirection;
             }
             else if (Mathf.Abs(z) >= Mathf.Abs(x))
             {
-                transform.position += new Vector3(0, 0, (Mathf.Abs(z - (-1f)) < Mathf.Abs(z - 1f)) ? -1f : 1f);
+                currentDirection = new Vector3(0, 0, (Mathf.Abs(z - (-1f)) < Mathf.Abs(z - 1f)) ? -1f : 1f);
+                transform.position += currentDirection;
             }
         }
     }
@@ -114,19 +130,32 @@ public class EnemyMovement : MonoBehaviour
         {
             case 0:
                 if (!HasDetectedObstacle(Vector3.right))
+                {
                     transform.position += Vector3.right;
+                    currentDirection = Vector3.right;
+                }
                 break;
             case 1:
                 if (!HasDetectedObstacle(-Vector3.right))
+                { 
                     transform.position += -Vector3.right;
+                    currentDirection = -Vector3.right;
+                }
                 break;
             case 2:
                 if (!HasDetectedObstacle(Vector3.forward))
+                { 
                     transform.position += Vector3.forward;
+                    currentDirection = Vector3.forward;
+
+                }
                 break;
             case 3:
                 if (!HasDetectedObstacle(-Vector3.forward))
+                {
                     transform.position += -Vector3.forward;
+                    currentDirection = -Vector3.forward;
+                }
                 break;
         }
     }
