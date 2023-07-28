@@ -13,7 +13,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     [SerializeField] float leanMultiplier;
     [SerializeField] float maxLean;
     [SerializeField] GameObject spill;
-    [SerializeField] int soupAmount;
+    public int soupAmount;
     [SerializeField] [Range(0, 20)] int soupSpillAmount;
     [SerializeField] Slider soupSlider;
 

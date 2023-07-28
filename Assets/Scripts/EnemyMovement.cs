@@ -64,10 +64,11 @@ public class EnemyMovement : MonoBehaviour
 
     IEnumerator OnPlayerCollision()
     {
-        yield return new WaitForSeconds(player.animLength + 0.3f);
+        yield return new WaitForSeconds(player.animLength + 0.2f);
         if (this.transform.position == player.transform.position)
         {
             player.MovePlayerOnly(currentDirection);
+            player.soupAmount -= 33;
         }
     }
 
