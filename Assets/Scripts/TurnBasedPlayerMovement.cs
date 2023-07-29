@@ -24,6 +24,8 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     [SerializeField] Transform spriteTransform;
     [SerializeField] Transform cameraTransform;
 
+    GameController game;
+
     bool canMove = true;
     public bool arrivedAtKing;
 
@@ -38,6 +40,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        game = FindObjectOfType<GameController>();
         arrivedAtKing = false;
         soupSlider.maxValue = soupAmount;
     }
@@ -54,6 +57,8 @@ public class TurnBasedPlayerMovement : MonoBehaviour
             xLean = MoveTowardsZero(xLean);
             zLean = MoveTowardsZero(zLean);
             EnemyMovement.MoveEnemies();
+            game.currentTurn += 1;
+            //print(game.currentTurn);
         }
         
         soupSlider.value = soupAmount;
@@ -86,6 +91,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
             xLean = IncreaseLean(xLean, -(int)moveDirection.z);
             zLean = IncreaseLean(zLean, (int)moveDirection.x);
             EnemyMovement.MoveEnemies();
+            game.currentTurn += 1;
         }
     }
 

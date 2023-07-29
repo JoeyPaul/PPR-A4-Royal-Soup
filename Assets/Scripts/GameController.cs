@@ -11,6 +11,9 @@ public class GameController : MonoBehaviour
     //GameObject freeLookCamera;
     CinemachineFreeLook freeLookCamera;
     // Update is called once per frame
+
+    public int currentTurn = 0;
+
     void Update()
     {
         if (player.arrivedAtKing) 
