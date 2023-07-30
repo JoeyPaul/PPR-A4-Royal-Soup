@@ -21,8 +21,11 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     [SerializeField] int frames;
     public float animLength;
 
-    [SerializeField] Transform spriteTransform;
+    [SerializeField] Transform currentSpriteTrans;
     [SerializeField] Transform cameraTransform;
+    [SerializeField] Sprite[] directionalSprites;
+    [SerializeField] Transform spriteDirectionTrans;
+    [SerializeField] SpriteRenderer spriteRenderer;
 
     GameController game;
 
@@ -46,11 +49,12 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     }
     private void Update()
     {
+        // Make the sprite face towards the camera
+        SpriteFaceToCamera();
+
         if (!canMove)
             return;
 
-        // Make the sprite face towards the camera
-        SpriteFaceToCamera();
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -68,13 +72,32 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     private void SpriteFaceToCamera()
     {
         // Make the sprite face towards the camera
-        Vector3 directionToCamera = cameraTransform.position - spriteTransform.position;
+        Vector3 directionToCamera = cameraTransform.position - currentSpriteTrans.position;
         directionToCamera.y = 0f;
         if (directionToCamera != Vector3.zero)
         {
             // Face towards the target on the Y-axis
             Quaternion targetRotation = Quaternion.LookRotation(directionToCamera);
-            spriteTransform.rotation = targetRotation;
+            currentSpriteTrans.rotation = targetRotation;
+        }
+        print(currentSpriteTrans.localRotation.eulerAngles);
+
+        // If the sprite rotation is between the angles 330 and 0 (facing forward);
+        if(currentSpriteTrans.localRotation.eulerAngles.y > 315 || currentSpriteTrans.localRotation.eulerAngles.y < 45)
+        {
+            spriteRenderer.sprite = directionalSprites[0];
+        }
+        else if (currentSpriteTrans.localRotation.eulerAngles.y > 45 && currentSpriteTrans.localRotation.eulerAngles.y < 135)
+        {
+            spriteRenderer.sprite = directionalSprites[1];
+        }
+        else if (currentSpriteTrans.localRotation.eulerAngles.y > 135 && currentSpriteTrans.localRotation.eulerAngles.y < 225)
+        {
+            spriteRenderer.sprite = directionalSprites[2];
+        }
+        else if (currentSpriteTrans.localRotation.eulerAngles.y > 225 && currentSpriteTrans.localRotation.eulerAngles.y < 315)
+        {
+            spriteRenderer.sprite = directionalSprites[3];
         }
     }
 
@@ -84,6 +107,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         if (!Physics.Raycast(transform.position, moveDirection, 1, obstacleLayer) && canMove)
         {
             canMove = false;
+            spriteDirectionTrans.localRotation = Quaternion.LookRotation(moveDirection);
             CheckForSpill();
             Vector3 startPos = transform.position;
             Vector3 nextPos = transform.position + moveDirection;
