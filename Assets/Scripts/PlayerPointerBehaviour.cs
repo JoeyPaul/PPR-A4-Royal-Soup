@@ -12,6 +12,6 @@ public class PlayerPointerBehaviour : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        player.MovePlayer(direction);
+        StartCoroutine(player.MovePlayer(direction, true));
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class EnemyMovement : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class EnemyMovement : MonoBehaviour
     private Vector3 currentDirection;
 
     [SerializeField] TurnBasedPlayerMovement player;
+    [SerializeField] LayerMask playerLayer;
 
     public enum EnemyType
     {
@@ -58,18 +60,27 @@ public class EnemyMovement : MonoBehaviour
             case EnemyType.None:
                 break;
         }
-        // Check to see if enemy collided with player, push player. 
-        StartCoroutine(OnPlayerCollision());
     }
 
-    IEnumerator OnPlayerCollision()
+    bool CheckForPlayer(Vector3 moveDir)
     {
-        yield return new WaitForSeconds(player.animLength + 0.2f);
-        if (this.transform.position == player.transform.position)
-        {
-            player.MovePlayerOnly(currentDirection);
-            player.soupAmount -= 33;
-        }
+        print("Looking for player in " + moveDir);
+        if (Physics.Raycast(transform.position, moveDir, 1, playerLayer))
+            if (Physics.Raycast(transform.position, moveDir, 2, obstacleLayer))
+            {
+                print("Player is backed against a wall");
+                player.soupAmount -= 33;
+                return false;
+            }
+            else
+            {
+                print("Player could be pushed");
+                StartCoroutine(player.MovePlayer(currentDirection, false));
+                player.soupAmount -= 33;
+            }
+        else
+            print("Couldn't find player");
+        return true;
     }
 
     void PatrolMovementBehaviour()
@@ -108,18 +119,21 @@ public class EnemyMovement : MonoBehaviour
             // Compare which tile is closer to the node
             float x = direction.x;
             float z = direction.z;
+
+
             if (Mathf.Abs(x) >= Mathf.Abs(z))
             {
                 // Move the enemy in the direction that is closer to the node. 
                 // using the ternary operator to correct the movement vector to a fixed integer value
                 currentDirection = new Vector3((Mathf.Abs(x - (-1f)) < Mathf.Abs(x - 1f)) ? -1f : 1f, 0, 0);
-                transform.position += currentDirection;
             }
             else if (Mathf.Abs(z) >= Mathf.Abs(x))
             {
                 currentDirection = new Vector3(0, 0, (Mathf.Abs(z - (-1f)) < Mathf.Abs(z - 1f)) ? -1f : 1f);
-                transform.position += currentDirection;
             }
+            if (!CheckForPlayer(currentDirection))
+                return;
+            transform.position += currentDirection;        
         }
     }
 

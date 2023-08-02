@@ -80,7 +80,6 @@ public class TurnBasedPlayerMovement : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(directionToCamera);
             currentSpriteTrans.rotation = targetRotation;
         }
-        print(currentSpriteTrans.localRotation.eulerAngles);
 
         // If the sprite rotation is between the angles 330 and 0 (facing forward);
         if(currentSpriteTrans.localRotation.eulerAngles.y > 315 || currentSpriteTrans.localRotation.eulerAngles.y < 45)
@@ -102,7 +101,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     }
 
     // I simplified the WASD movement into one function which is now called by the PlayerPointerBehaviour script whenever the player clicks on a pointer.
-    public void MovePlayer(Vector3 moveDirection)
+    public IEnumerator MovePlayer(Vector3 moveDirection, bool completeTurn)
     {
         if (!Physics.Raycast(transform.position, moveDirection, 1, obstacleLayer) && canMove)
         {
@@ -111,64 +110,23 @@ public class TurnBasedPlayerMovement : MonoBehaviour
             CheckForSpill();
             Vector3 startPos = transform.position;
             Vector3 nextPos = transform.position + moveDirection;
-            StartCoroutine(LerpAnim(startPos, nextPos));
             xLean = IncreaseLean(xLean, -(int)moveDirection.z);
             zLean = IncreaseLean(zLean, (int)moveDirection.x);
-            EnemyMovement.MoveEnemies();
-            game.currentTurn += 1;
+            for (int i = 0; i < frames; i++)
+            {
+                transform.position = Vector3.Lerp(startPos, nextPos, i / (float)frames);
+                yield return new WaitForSeconds(animLength / frames);
+            }
+            transform.position = nextPos;
+            if(completeTurn)
+            {
+                EnemyMovement.MoveEnemies();
+                game.currentTurn += 1;
+            }
+            canMove = true;
         }
     }
 
-    // Almost the same as the MovePlayer function, although it checks for a collision free direction to move in. 
-    // It will then move them in the respective direction.
-    public void MovePlayerOnly(Vector3 enemyMoveDirection)
-    {
-        Vector3 moveDirection = GetCollisionFreeDirection(enemyMoveDirection);
-        if (!Physics.Raycast(transform.position, moveDirection, 1, obstacleLayer) && canMove)
-        {
-            canMove = false;
-            CheckForSpill();
-            Vector3 startPos = transform.position;
-            Vector3 nextPos = transform.position + moveDirection;
-            StartCoroutine(LerpAnim(startPos, nextPos));
-            xLean = IncreaseLean(xLean, -(int)moveDirection.z);
-            zLean = IncreaseLean(zLean, (int)moveDirection.x);
-        }
-    }
-
-    private Vector3 GetCollisionFreeDirection(Vector3 moveDirection) 
-    {
-        // Check 4 cardinal directions for collision objects
-        if (!Physics.Raycast(transform.position, transform.right, 1, obstacleLayer))
-        {
-            return transform.right;
-        }
-        else if (!Physics.Raycast(transform.position, transform.forward, 1, obstacleLayer))
-        {
-            return transform.forward;
-        }
-        else if (!Physics.Raycast(transform.position, -transform.right, 1, obstacleLayer))
-        {
-            return -transform.right;
-        }
-        else if (!Physics.Raycast(transform.position, -transform.right, 1, obstacleLayer))
-        {
-            return -transform.forward;
-        }
-        return moveDirection;
-    }
-
-    // Linearly Interpolates our transform between the start pos and the next pos over the course of animLength seconds.
-    private IEnumerator LerpAnim(Vector3 startPos, Vector3 nextPos)
-    {
-        for (int i = 0; i < frames; i++)
-        {
-            transform.position = Vector3.Lerp(startPos, nextPos, i / (float)frames);
-            yield return new WaitForSeconds(animLength / frames);
-        }
-        transform.position = nextPos;
-        canMove = true;
-    }
     // Stabilises the pot on a single inputted axis by bringing its lean towards zero by 1
     private int MoveTowardsZero(int leanToChange)
     {
