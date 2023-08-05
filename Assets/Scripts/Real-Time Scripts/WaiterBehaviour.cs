@@ -41,7 +41,7 @@ public class WaiterBehaviour : MonoBehaviour
                         i++;
                         if (i >= targetPoints.Length)
                             i = 0;
-                        print("Reached Destination " + i);
+                        //print("Reached Destination " + i);
                         agent.destination = targetPoints[i].position;
                     }
                     else
