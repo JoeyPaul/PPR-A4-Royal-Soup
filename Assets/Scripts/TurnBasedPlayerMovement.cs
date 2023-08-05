@@ -30,7 +30,9 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     GameController game;
 
     bool canMove = true;
-    public bool arrivedAtKing;
+    [HideInInspector] public bool arrivedAtKing;
+
+    [SerializeField] private GameObject retryScreen; 
 
     private void OnTriggerEnter(Collider other)
     {
@@ -51,6 +53,9 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     {
         // Make the sprite face towards the camera
         SpriteFaceToCamera();
+
+        if (soupAmount <= 0 && !retryScreen.activeInHierarchy)
+            retryScreen.SetActive(true);
 
         if (!canMove)
             return;
@@ -140,7 +145,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     {
         if (xLean == maxLean || zLean == maxLean || xLean == -maxLean || zLean == -maxLean)
         {
-            Instantiate(spill, transform.position, Quaternion.identity);
+            Instantiate(spill, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.Euler(-90,0,0));
             soupAmount -= soupSpillAmount;
         }
     }
