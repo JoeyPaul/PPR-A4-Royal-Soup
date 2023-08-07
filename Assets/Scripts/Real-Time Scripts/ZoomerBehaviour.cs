@@ -66,7 +66,7 @@ public class ZoomerBehaviour : MonoBehaviour
         // Returns true when the transform is within 1 unit cube of the target position.
         if (Vector3.Distance(transform.position, targetPoints[point].transform.position) <= 0.5f)
         {
-            print("reached");
+            //print("reached");
             return true;
         }
         return false;
