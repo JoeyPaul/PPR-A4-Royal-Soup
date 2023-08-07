@@ -64,22 +64,17 @@ public class EnemyMovement : MonoBehaviour
 
     bool CheckForPlayer(Vector3 moveDir)
     {
-        print("Looking for player in " + moveDir);
         if (Physics.Raycast(transform.position, moveDir, 1, playerLayer))
             if (Physics.Raycast(transform.position, moveDir, 2, obstacleLayer))
             {
-                print("Player is backed against a wall");
-                player.soupAmount -= 33;
+                player.SpillSoup();
                 return false;
             }
             else
             {
-                print("Player could be pushed");
                 StartCoroutine(player.MovePlayer(currentDirection, false));
-                player.soupAmount -= 33;
+                player.SpillSoup();
             }
-        else
-            print("Couldn't find player");
         return true;
     }
 

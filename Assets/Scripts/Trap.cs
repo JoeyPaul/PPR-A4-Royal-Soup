@@ -51,7 +51,7 @@ public class Trap : MonoBehaviour
                 {
                     // "Player" was detected.
                     //print(hitInfo);
-                    player.soupAmount -= trapDamageAmount; // Deduct Soup
+                    player.SpillSoup(); // Deduct Soup
                     // Store the turn when the player was hit
                     turnWhenHit = game.currentTurn;
                 }

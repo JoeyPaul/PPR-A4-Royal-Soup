@@ -145,8 +145,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     {
         if (xLean == maxLean || zLean == maxLean || xLean == -maxLean || zLean == -maxLean)
         {
-            Instantiate(spill, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.Euler(-90,0,0));
-            soupAmount -= soupSpillAmount;
+            SpillSoup();
         }
     }
 
@@ -157,5 +156,11 @@ public class TurnBasedPlayerMovement : MonoBehaviour
             currentLean += difference;
     
         return currentLean;
+    }
+
+    public void SpillSoup()
+    {
+        Instantiate(spill, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.Euler(-90, 0, 0));
+        soupAmount -= soupSpillAmount;
     }
 }
