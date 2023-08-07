@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Trap : MonoBehaviour
 {
@@ -8,14 +9,20 @@ public class Trap : MonoBehaviour
     TurnBasedPlayerMovement player;
     MeshRenderer renderer;
 
-    public enum ActiveEvery
-    {
-        Second_Turn,
-        Third_Turn,
-        Fourth_Turn
-    }
+    [SerializeField] int interval;
+    [SerializeField] int startingTurn;
+    private int myCount;
 
-    public ActiveEvery trapActive;
+    private int previousTurn;
+
+    //public enum ActiveEvery
+    //{
+    //    Second_Turn,
+    //    Third_Turn,
+    //    Fourth_Turn
+    //}
+
+    //public ActiveEvery trapActive;
     public int trapDamageAmount = 33;
     int turnWhenHit;
 
@@ -51,35 +58,30 @@ public class Trap : MonoBehaviour
             }
         }
     }
+    void UpdateCounter()
+    {
+        myCount++;
+        if(myCount == interval)
+        {
+            myCount = 0;
+            renderer.enabled = true;
+            CheckForPlayer();
+        }
+        else
+        {
+            renderer.enabled = false;
+        }
+    }
     
     void Update()
     {
-        renderer.enabled = false;
-        if (trapActive == ActiveEvery.Second_Turn) 
+        if (game.currentTurn <= startingTurn)
+            return;
+
+        if(previousTurn != game.currentTurn)
         {
-            // Modulus Calculation to check if the current turn is a 
-            // multiple of 2.
-            if (game.currentTurn % 2 == 0)
-            {
-                renderer.enabled = true;
-                CheckForPlayer();
-            }
-        }
-        else if (trapActive == ActiveEvery.Third_Turn)
-        {
-            if (game.currentTurn % 3 == 0)
-            {
-                renderer.enabled = true;
-                CheckForPlayer();
-            }
-        }
-        else if (trapActive == ActiveEvery.Fourth_Turn)
-        {
-            if (game.currentTurn % 4 == 0)
-            {
-                renderer.enabled = true;
-                CheckForPlayer();
-            }
+            previousTurn = game.currentTurn;
+            UpdateCounter();
         }
     }
 }
