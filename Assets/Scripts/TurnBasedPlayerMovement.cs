@@ -26,10 +26,11 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     [SerializeField] Sprite[] directionalSprites;
     [SerializeField] Transform spriteDirectionTrans;
     [SerializeField] SpriteRenderer spriteRenderer;
+    [HideInInspector] public Vector3 prevDir;
 
     GameController game;
 
-    bool canMove = true;
+    [HideInInspector] public bool canMove = true;
     [HideInInspector] public bool arrivedAtKing;
 
     [SerializeField] private GameObject retryScreen;
@@ -129,6 +130,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         if (!Physics.Raycast(transform.position, moveDirection, 1, obstacleLayer) && canMove)
         {
             canMove = false;
+            prevDir = moveDirection;
             spriteDirectionTrans.localRotation = Quaternion.LookRotation(moveDirection);
             //CheckForSpill();
             Vector3 startPos = transform.position;
