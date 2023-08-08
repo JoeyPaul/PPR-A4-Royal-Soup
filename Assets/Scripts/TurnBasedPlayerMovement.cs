@@ -14,7 +14,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     [SerializeField] float maxLean;
     [SerializeField] GameObject spill;
     public int soupAmount;
-    [SerializeField] [Range(0, 20)] int soupSpillAmount;
+    [SerializeField][Range(0, 20)] int soupSpillAmount;
     [SerializeField] Slider soupSlider;
 
     [SerializeField] LayerMask obstacleLayer;
@@ -32,7 +32,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     bool canMove = true;
     [HideInInspector] public bool arrivedAtKing;
 
-    [SerializeField] private GameObject retryScreen; 
+    [SerializeField] private GameObject retryScreen;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -45,7 +45,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        game = FindObjectOfType<GameController>();
+        //game = FindObjectOfType<GameController>();
         arrivedAtKing = false;
         soupSlider.maxValue = soupAmount;
     }
@@ -66,12 +66,30 @@ public class TurnBasedPlayerMovement : MonoBehaviour
             xLean = MoveTowardsZero(xLean);
             zLean = MoveTowardsZero(zLean);
             EnemyMovement.MoveEnemies();
-            game.currentTurn += 1;
+            //game.currentTurn += 1;
             //print(game.currentTurn);
         }
-        
+
+        // WASD Input 
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            StartCoroutine(MovePlayer(transform.forward, true));
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            StartCoroutine(MovePlayer(-transform.forward, true));
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            StartCoroutine(MovePlayer(-transform.right, true));
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            StartCoroutine(MovePlayer(transform.right, true));
+        }
+
         soupSlider.value = soupAmount;
-        potTrans.rotation = Quaternion.Euler(xLean * leanMultiplier, 0, zLean * leanMultiplier);
+        //potTrans.rotation = Quaternion.Euler(xLean * leanMultiplier, 0, zLean * leanMultiplier);
     }
 
     private void SpriteFaceToCamera()
@@ -87,7 +105,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         }
 
         // If the sprite rotation is between the angles 330 and 0 (facing forward);
-        if(currentSpriteTrans.localRotation.eulerAngles.y > 315 || currentSpriteTrans.localRotation.eulerAngles.y < 45)
+        if (currentSpriteTrans.localRotation.eulerAngles.y > 315 || currentSpriteTrans.localRotation.eulerAngles.y < 45)
         {
             spriteRenderer.sprite = directionalSprites[0];
         }
@@ -112,22 +130,22 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         {
             canMove = false;
             spriteDirectionTrans.localRotation = Quaternion.LookRotation(moveDirection);
-            CheckForSpill();
+            //CheckForSpill();
             Vector3 startPos = transform.position;
             Vector3 nextPos = transform.position + moveDirection;
-            xLean = IncreaseLean(xLean, -(int)moveDirection.z);
-            zLean = IncreaseLean(zLean, (int)moveDirection.x);
+            //xLean = IncreaseLean(xLean, -(int)moveDirection.z);
+            //zLean = IncreaseLean(zLean, (int)moveDirection.x);
             for (int i = 0; i < frames; i++)
             {
                 transform.position = Vector3.Lerp(startPos, nextPos, i / (float)frames);
                 yield return new WaitForSeconds(animLength / frames);
             }
             transform.position = nextPos;
-            if(completeTurn)
-            {
-                EnemyMovement.MoveEnemies();
-                game.currentTurn += 1;
-            }
+            //if(completeTurn)
+            //{
+            //    EnemyMovement.MoveEnemies();
+            //    //game.currentTurn += 1;
+            //}
             canMove = true;
         }
     }
@@ -152,9 +170,9 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     // This is what tips the pot when the player moves
     private int IncreaseLean(int currentLean, int difference)
     {
-        if(difference > 0 && currentLean < maxLean || difference < 0 && currentLean > -maxLean)
+        if (difference > 0 && currentLean < maxLean || difference < 0 && currentLean > -maxLean)
             currentLean += difference;
-    
+
         return currentLean;
     }
 

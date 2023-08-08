@@ -5270,6 +5270,7 @@ GameObject:
   - component: {fileID: 818366173}
   - component: {fileID: 818366172}
   - component: {fileID: 818366176}
+  - component: {fileID: 818366177}
   m_Layer: 2
   m_Name: Player
   m_TagString: Player
@@ -5377,7 +5378,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 818366171}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 758e1ebc06235c54089798a4ae8694e3, type: 3}
   m_Name: 
@@ -5402,6 +5403,41 @@ MonoBehaviour:
   spriteDirectionTrans: {fileID: 2060848190}
   spriteRenderer: {fileID: 309391406}
   arrivedAtKing: 0
+--- !u!114 &818366177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818366171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 934c93dc1b51d4d4eacd9171e03958cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  potTrans: {fileID: 7827244718464395868}
+  leanMultiplier: 0
+  maxLean: 0
+  spill: {fileID: 4790666490801708088, guid: 312acf8079522e74b9c8fd8d8f9f8268, type: 3}
+  soupAmount: 4
+  soupSpillAmount: 1
+  soupSlider: {fileID: 714262091}
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  frames: 25
+  animLength: 0.1
+  currentSpriteTrans: {fileID: 309391405}
+  cameraTransform: {fileID: 963194228}
+  directionalSprites:
+  - {fileID: -1191691921, guid: 5f06c20eb2a2cd14780995d602a905fe, type: 3}
+  - {fileID: 859258246, guid: 5f06c20eb2a2cd14780995d602a905fe, type: 3}
+  - {fileID: 480380074, guid: 5f06c20eb2a2cd14780995d602a905fe, type: 3}
+  - {fileID: 2021146520, guid: 5f06c20eb2a2cd14780995d602a905fe, type: 3}
+  spriteDirectionTrans: {fileID: 2060848190}
+  spriteRenderer: {fileID: 309391406}
+  arrivedAtKing: 0
+  retryScreen: {fileID: 0}
 --- !u!1 &819215292
 GameObject:
   m_ObjectHideFlags: 0
