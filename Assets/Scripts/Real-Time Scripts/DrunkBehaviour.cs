@@ -35,21 +35,26 @@ public class DrunkBehaviour : MonoBehaviour
             {
                 if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
                 {
-                    if (elapsedTime > waitTime && elapsedTime < waitTime + wanderTime)
-                    {
-                        agent.destination = new Vector3(Random.Range(-xLimit, xLimit), 0, Random.Range(-zLimit, zLimit));
-                    }
-                    else if (elapsedTime > waitTime + wanderTime) // reset condition
-                    {
-                        agent.destination = originalPosition;
-                        if (agent.remainingDistance <= agent.stoppingDistance)
-                        {
-                            if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
-                            {
-                                elapsedTime = 0.0f;
-                            }
-                        }
-                    }
+                    SetRandomDestinationOrReturnToOriginalPosition();
+                }
+            }
+        }
+    }
+
+    void SetRandomDestinationOrReturnToOriginalPosition()
+    {
+        if (elapsedTime > waitTime && elapsedTime < waitTime + wanderTime)
+        {
+            agent.destination = new Vector3(Random.Range(-xLimit, xLimit), 0, Random.Range(-zLimit, zLimit));
+        }
+        else if (elapsedTime > waitTime + wanderTime) // reset condition
+        {
+            agent.destination = originalPosition;
+            if (agent.remainingDistance <= agent.stoppingDistance)
+            {
+                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
+                {
+                    elapsedTime = 0.0f;
                 }
             }
         }
