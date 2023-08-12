@@ -71,6 +71,11 @@ public class TurnBasedPlayerMovement : MonoBehaviour
             //print(game.currentTurn);
         }
 
+        if(Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            GetComponent<Rigidbody>().AddForce(-1, 0, 0);
+        }
+
         // WASD Input 
         if (Input.GetKeyDown(KeyCode.W))
         {
