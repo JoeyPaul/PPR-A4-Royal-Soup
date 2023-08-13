@@ -8,7 +8,6 @@ public class PuddleBehaviour : MonoBehaviour
     TurnBasedPlayerMovement player;
     private void OnTriggerEnter(Collider other)
     {
-        print("Hit");
         if (other.CompareTag("Player") && !isSliding)
         {
             player = other.GetComponent<TurnBasedPlayerMovement>();

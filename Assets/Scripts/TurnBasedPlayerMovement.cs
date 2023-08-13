@@ -1,3 +1,4 @@
+using Cinemachine.Utility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,6 +42,21 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         {
             //print("Player collided with the destination collider!");
             arrivedAtKing = true;
+        }
+        if(other.CompareTag("Enemy"))
+        {
+            Vector3 direction = (transform.position - other.transform.position).normalized;
+            if(direction.Abs().x > direction.Abs().z)
+            {
+                direction.z = 0;
+            }
+            else
+            {
+                direction.x = 0;
+            }
+
+            print(direction);
+            StartCoroutine(MovePlayer(direction.normalized, false));
         }
     }
 
