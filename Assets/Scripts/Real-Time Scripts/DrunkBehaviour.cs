@@ -45,7 +45,7 @@ public class DrunkBehaviour : MonoBehaviour
     {
         if (elapsedTime > waitTime && elapsedTime < waitTime + wanderTime)
         {
-            agent.destination = new Vector3(Random.Range(-xLimit, xLimit), 0, Random.Range(-zLimit, zLimit));
+            agent.destination = transform.position + new Vector3(Random.Range(-xLimit, xLimit), 0, Random.Range(-zLimit, zLimit));
         }
         else if (elapsedTime > waitTime + wanderTime) // reset condition
         {
