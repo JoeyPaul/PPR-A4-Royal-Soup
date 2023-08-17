@@ -36,6 +36,10 @@ public class TurnBasedPlayerMovement : MonoBehaviour
 
     [SerializeField] private GameObject retryScreen;
 
+    [SerializeField] float invincibilityDuration = 1f;
+    private bool currentlyInvincible = false;
+    private float timeInvincible = 0.0f;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Destination"))
@@ -45,18 +49,22 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         }
         if(other.CompareTag("Enemy"))
         {
-            Vector3 direction = (transform.position - other.transform.position).normalized;
-            if(direction.Abs().x > direction.Abs().z)
+            if (!currentlyInvincible)
             {
-                direction.z = 0;
+                Vector3 direction = (transform.position - other.transform.position).normalized;
+                if (direction.Abs().x > direction.Abs().z)
+                {
+                    direction.z = 0;
+                }
+                else
+                {
+                    direction.x = 0;
+                }
+                //print(direction);
+                StartCoroutine(MovePlayer(direction.normalized, false));
+                soupAmount -= 1;
+                currentlyInvincible = true;
             }
-            else
-            {
-                direction.x = 0;
-            }
-
-            print(direction);
-            StartCoroutine(MovePlayer(direction.normalized, false));
         }
     }
 
@@ -76,6 +84,15 @@ public class TurnBasedPlayerMovement : MonoBehaviour
 
         if (!canMove)
             return;
+
+        // On trigger (got hit by enemy) invincibility timer and reset condition.
+        if (currentlyInvincible)
+            timeInvincible += Time.deltaTime;
+        if (timeInvincible > invincibilityDuration)
+        {
+            currentlyInvincible = false;
+            timeInvincible = 0.0f;
+        }
 
 
         if (Input.GetKeyDown(KeyCode.Space))
