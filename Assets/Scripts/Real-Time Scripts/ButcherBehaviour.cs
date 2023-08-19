@@ -74,6 +74,7 @@ public class ButcherBehaviour : MonoBehaviour
             {
                 if (leftHit.collider.CompareTag("Player"))
                 {
+                    player.Hit();
                     player.soupAmount -= 1;
                 }
             }
@@ -93,6 +94,7 @@ public class ButcherBehaviour : MonoBehaviour
             {
                 if (rightHit.collider.CompareTag("Player"))
                 {
+                    player.Hit();
                     player.soupAmount -= 1;
                 }
             }

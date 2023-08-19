@@ -65,9 +65,15 @@ public class TurnBasedPlayerMovement : MonoBehaviour
                 //print(direction);
                 StartCoroutine(MovePlayer(direction.normalized, false));
                 soupAmount -= 1;
+                Hit();
                 currentlyInvincible = true;
             }
         }
+    }
+
+    public void Hit()
+    {
+        Instantiate(spill, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.Euler(-90, 0, 0));
     }
 
     private void Start()
