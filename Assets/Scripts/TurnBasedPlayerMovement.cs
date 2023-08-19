@@ -2,6 +2,7 @@ using Cinemachine.Utility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
@@ -45,7 +46,8 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         if (other.CompareTag("Destination"))
         {
             //print("Player collided with the destination collider!");
-            arrivedAtKing = true;
+            //arrivedAtKing = true;
+            SceneManagerScript.ChangeScene("ResultsSceneWin");
         }
         if(other.CompareTag("Enemy"))
         {
