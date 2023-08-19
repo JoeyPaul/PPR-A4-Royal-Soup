@@ -2832,11 +2832,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9889102adc6db5489abad19acc2b2cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   minWaitTime: 5
   maxWaitTime: 20
+  moveCooldown: 1
   wanderTime: 6
   xLimit: 3
   zLimit: 3
+  animationFrames: 0
+  animationLength: 0
 --- !u!65 &191086510
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13763,11 +13769,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9889102adc6db5489abad19acc2b2cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   minWaitTime: 5
   maxWaitTime: 20
+  moveCooldown: 1
   wanderTime: 6
   xLimit: 3
   zLimit: 3
+  animationFrames: 0
+  animationLength: 0
 --- !u!65 &973908456
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14761,11 +14773,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9889102adc6db5489abad19acc2b2cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   minWaitTime: 5
   maxWaitTime: 20
+  moveCooldown: 1
   wanderTime: 6
   xLimit: 3
   zLimit: 3
+  animationFrames: 0
+  animationLength: 0
 --- !u!65 &1030576673
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -21492,11 +21510,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9889102adc6db5489abad19acc2b2cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   minWaitTime: 5
   maxWaitTime: 20
+  moveCooldown: 1
   wanderTime: 6
   xLimit: 3
   zLimit: 3
+  animationFrames: 0
+  animationLength: 0
 --- !u!65 &1544135021
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -23116,11 +23140,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9889102adc6db5489abad19acc2b2cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   minWaitTime: 5
   maxWaitTime: 20
+  moveCooldown: 1
   wanderTime: 6
   xLimit: 3
   zLimit: 3
+  animationFrames: 0
+  animationLength: 0
 --- !u!65 &1634386826
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24428,7 +24458,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1693055366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24441,11 +24471,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9889102adc6db5489abad19acc2b2cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minWaitTime: 5
-  maxWaitTime: 20
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  minWaitTime: 1
+  maxWaitTime: 2
+  moveCooldown: 1
   wanderTime: 6
   xLimit: 3
   zLimit: 3
+  animationFrames: 4
+  animationLength: 1
 --- !u!65 &1693055367
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -25806,11 +25842,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9889102adc6db5489abad19acc2b2cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   minWaitTime: 5
   maxWaitTime: 20
+  moveCooldown: 1
   wanderTime: 6
   xLimit: 3
   zLimit: 3
+  animationFrames: 0
+  animationLength: 0
 --- !u!65 &1808281505
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28471,11 +28513,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9889102adc6db5489abad19acc2b2cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   minWaitTime: 5
   maxWaitTime: 20
+  moveCooldown: 1
   wanderTime: 6
   xLimit: 3
   zLimit: 3
+  animationFrames: 0
+  animationLength: 0
 --- !u!65 &2053471762
 BoxCollider:
   m_ObjectHideFlags: 0
