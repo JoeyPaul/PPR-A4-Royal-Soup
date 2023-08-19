@@ -79,8 +79,8 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         // Make the sprite face towards the camera
         SpriteFaceToCamera();
 
-        if (soupAmount <= 0 && !retryScreen.activeInHierarchy)
-            retryScreen.SetActive(true);
+        if (soupAmount <= 0)
+            SceneManagerScript.ChangeScene("ResultsScene");
 
         if (!canMove)
             return;
