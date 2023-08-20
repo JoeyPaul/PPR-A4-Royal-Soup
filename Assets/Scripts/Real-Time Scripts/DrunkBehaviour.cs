@@ -21,7 +21,7 @@ public class DrunkBehaviour : MonoBehaviour
 
     Vector3 originalPosition;
 
-    bool canMove = false;
+    bool canMove = true;
 
     [SerializeField] int animationFrames;
     [SerializeField] int animationLength;
@@ -51,7 +51,7 @@ public class DrunkBehaviour : MonoBehaviour
                     Vector3 destination = new Vector3(agent.destination.x, agent.destination.y, agent.destination.z);
                     if (canMove && timeSinceMoved > moveCooldown)
                     {
-                        StartCoroutine(MovePlayer(ConvertToClosestDirection(destination),false));
+                        StartCoroutine(MoveEnemy(ConvertToClosestDirection(destination)));
                     }
                     else
                     {
@@ -81,22 +81,29 @@ public class DrunkBehaviour : MonoBehaviour
         }
     }
 
-    public IEnumerator MovePlayer(Vector3 moveDirection, bool completeTurn)
+    public IEnumerator MoveEnemy(Vector3 moveDirection)
     {
         if (!Physics.Raycast(transform.position, moveDirection, 1, obstacleLayer) && canMove)
         {
             canMove = false;
-            Vector3 startPos = transform.position;
-            Vector3 nextPos = transform.position + moveDirection;
-          
-                print("should mve");
-                transform.position = Vector3.Lerp(startPos, nextPos,(float)animationFrames);
-                timeSinceMoved = 0.0f;
-            transform.position = nextPos;
+
+            Vector3 destinationPos = transform.position + moveDirection;
+
+            while (Vector3.Distance(transform.position, destinationPos) > 0.01f)
+            {
+                transform.position = Vector3.Lerp(transform.position, destinationPos, agent.speed * Time.deltaTime);
+                yield return null;
+            }
+
+            transform.position = destinationPos;
             canMove = true;
         }
-        yield return new WaitForSeconds(0.1f);
+        else
+        {
+            SetRandomDestinationOrReturnToOriginalPosition();
+        }
     }
+
 
     public Vector3 ConvertToClosestDirection(Vector3 inputVector)
     {
