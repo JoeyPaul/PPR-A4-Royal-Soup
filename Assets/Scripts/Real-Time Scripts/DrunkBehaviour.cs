@@ -97,6 +97,7 @@ public class DrunkBehaviour : MonoBehaviour
 
             transform.position = destinationPos;
             canMove = true;
+            timeSinceMoved = 0.0f;
         }
         else
         {
