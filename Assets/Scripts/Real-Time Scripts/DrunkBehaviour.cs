@@ -22,6 +22,7 @@ public class DrunkBehaviour : MonoBehaviour
     Vector3 originalPosition;
 
     bool canMove = true;
+    bool destinationSet = false;
 
     [SerializeField] int animationFrames;
     [SerializeField] int animationLength;
@@ -39,26 +40,20 @@ public class DrunkBehaviour : MonoBehaviour
     private void Update()
     {
         elapsedTime += Time.deltaTime;
-
-        if (!agent.pathPending)
+        if (canMove && !destinationSet)
         {
-            if (agent.remainingDistance <= agent.stoppingDistance)
-            {
-                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
-                {
-                    SetRandomDestinationOrReturnToOriginalPosition();
-                    agent.isStopped = true;
-                    Vector3 destination = new Vector3(agent.destination.x, agent.destination.y, agent.destination.z);
-                    if (canMove && timeSinceMoved > moveCooldown)
-                    {
-                        StartCoroutine(MoveEnemy(ConvertToClosestDirection(destination)));
-                    }
-                    else
-                    {
-                        timeSinceMoved += Time.deltaTime;
-                    }
-                }
-            }
+            SetRandomDestinationOrReturnToOriginalPosition();
+            agent.isStopped = true;
+            destinationSet = true;
+        }
+        if (canMove && timeSinceMoved > moveCooldown)
+        {
+            print("start move coroutine" + ConvertToClosestDirection(agent.destination));
+            StartCoroutine(MoveEnemy(ConvertToClosestDirection(agent.destination)));
+        }
+        else
+        {
+            timeSinceMoved += Time.deltaTime;
         }
     }
 
@@ -66,18 +61,14 @@ public class DrunkBehaviour : MonoBehaviour
     {
         if (elapsedTime > waitTime && elapsedTime < waitTime + wanderTime)
         {
+            print("set random destination vector");
             agent.destination = transform.position + new Vector3(Random.Range(-xLimit, xLimit), 0, Random.Range(-zLimit, zLimit));
         }
         else if (elapsedTime > waitTime + wanderTime) // reset condition
         {
+            print("set original position destination vector");
             agent.destination = originalPosition;
-            if (agent.remainingDistance <= agent.stoppingDistance)
-            {
-                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
-                {
-                    elapsedTime = 0.0f;
-                }
-            }
+            elapsedTime = 0.0f;
         }
     }
 
@@ -97,9 +88,10 @@ public class DrunkBehaviour : MonoBehaviour
 
             transform.position = destinationPos;
             canMove = true;
+            destinationSet = false;
             timeSinceMoved = 0.0f;
         }
-        else
+        else if (Physics.Raycast(transform.position, moveDirection, 1, obstacleLayer))
         {
             SetRandomDestinationOrReturnToOriginalPosition();
         }
@@ -110,17 +102,22 @@ public class DrunkBehaviour : MonoBehaviour
     {
         Vector3 normalizedVector = inputVector.normalized;
 
-        if (Mathf.Abs(normalizedVector.x) >= Mathf.Abs(normalizedVector.y) && Mathf.Abs(normalizedVector.x) >= Mathf.Abs(normalizedVector.z))
+        Vector3 closestDirection = Vector3.zero;
+        float maxComponent = Mathf.Max(Mathf.Abs(normalizedVector.x), Mathf.Abs(normalizedVector.y), Mathf.Abs(normalizedVector.z));
+
+        if (Mathf.Abs(normalizedVector.x) == maxComponent)
         {
-            return new Vector3(Mathf.Sign(normalizedVector.x), 0, 0);
+            closestDirection = new Vector3(Mathf.Sign(normalizedVector.x), 0, 0);
         }
-        else if (Mathf.Abs(normalizedVector.y) >= Mathf.Abs(normalizedVector.x) && Mathf.Abs(normalizedVector.y) >= Mathf.Abs(normalizedVector.z))
+        else if (Mathf.Abs(normalizedVector.y) == maxComponent)
         {
-            return new Vector3(0, Mathf.Sign(normalizedVector.y), 0);
+            closestDirection = new Vector3(0, Mathf.Sign(normalizedVector.y), 0);
         }
-        else
+        else if (Mathf.Abs(normalizedVector.z) == maxComponent)
         {
-            return new Vector3(0, 0, Mathf.Sign(normalizedVector.z));
+            closestDirection = new Vector3(0, 0, Mathf.Sign(normalizedVector.z));
         }
+
+        return closestDirection;
     }
 }
