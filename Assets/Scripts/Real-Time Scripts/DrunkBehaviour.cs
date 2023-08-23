@@ -23,6 +23,7 @@ public class DrunkBehaviour : MonoBehaviour
 
     bool canMove = true;
     bool destinationSet = false;
+    bool returnToOriginalPos = false;
 
     [SerializeField] int animationFrames;
     [SerializeField] int animationLength;
@@ -35,26 +36,60 @@ public class DrunkBehaviour : MonoBehaviour
         agent.destination = transform.position;
 
         waitTime = Random.Range(minWaitTime, maxWaitTime);
+        SetRandomDestinationOrReturnToOriginalPosition();
     }
 
     private void Update()
     {
         elapsedTime += Time.deltaTime;
-        if (canMove && !destinationSet)
+       
+        if (canMove)
         {
-            SetRandomDestinationOrReturnToOriginalPosition();
-            agent.isStopped = true;
-            destinationSet = true;
+            // Set destination
+            if (!destinationSet)
+            {
+                SetRandomDestinationOrReturnToOriginalPosition();
+                agent.isStopped = true;
+                destinationSet = true;
+            }
+            // Move to random pos
+            if (timeSinceMoved > moveCooldown && !returnToOriginalPos)
+            {
+                StartCoroutine(MoveEnemy(ConvertToClosestDirection(agent.destination)));
+            }
+            else
+            {
+                timeSinceMoved += Time.deltaTime;
+            }
+            // Return to original pos
+            if (returnToOriginalPos == true && Vector3.Distance(transform.position, originalPosition) < 0.1f)
+            {
+                elapsedTime = 0.0f;
+                returnToOriginalPos = false;
+                destinationSet = false;
+                canMove = true;
+            }
+            else if (timeSinceMoved > moveCooldown && returnToOriginalPos)
+            {
+                Vector3 directionToOriginal = (originalPosition - transform.position).normalized;
+                Vector3 roundedDirection = ConvertToClosestDirection(directionToOriginal);
+                agent.destination = transform.position + roundedDirection;
+                print("return");
+                StartCoroutine(MoveEnemy(roundedDirection));
+            }
+            else if (timeSinceMoved < moveCooldown)
+            {
+                timeSinceMoved += Time.deltaTime;
+            }
         }
-        if (canMove && timeSinceMoved > moveCooldown)
-        {
-            print("start move coroutine" + ConvertToClosestDirection(agent.destination));
-            StartCoroutine(MoveEnemy(ConvertToClosestDirection(agent.destination)));
-        }
-        else
-        {
-            timeSinceMoved += Time.deltaTime;
-        }
+    }
+
+    Vector3 ClosestDirection(Vector3 direction) 
+    {
+        Vector3 closestDirection = direction + transform.position;
+        closestDirection = closestDirection.normalized;
+
+        return closestDirection;
     }
 
     void SetRandomDestinationOrReturnToOriginalPosition()
@@ -62,14 +97,13 @@ public class DrunkBehaviour : MonoBehaviour
         if (elapsedTime > waitTime && elapsedTime < waitTime + wanderTime)
         {
             print("set random destination vector");
-            agent.destination = transform.position + new Vector3(Random.Range(-xLimit, xLimit), 0, Random.Range(-zLimit, zLimit));
+            agent.destination = new Vector3(Random.Range(-xLimit, xLimit), 0, Random.Range(-zLimit, zLimit));
         }
         else if (elapsedTime > waitTime + wanderTime) // reset condition
         {
-            print("set original position destination vector");
-            agent.destination = originalPosition;
-            elapsedTime = 0.0f;
+            returnToOriginalPos = true;
         }
+
     }
 
     public IEnumerator MoveEnemy(Vector3 moveDirection)
