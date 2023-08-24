@@ -8,6 +8,7 @@ using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 public class DrunkBehaviour : MonoBehaviour
 {
     [SerializeField] LayerMask obstacleLayer;
+    [SerializeField] WarningDangerMarker dangerMarker;
 
     [SerializeField] private float minWaitTime = 3f;
     [SerializeField] private float maxWaitTime = 10f;
@@ -16,6 +17,7 @@ public class DrunkBehaviour : MonoBehaviour
     private float timeSinceMoved = 0f;
     private float waitTime;
     public float wanderTime = 10f;
+    private float timeWhenDestinationSet = 0.0f;
     [SerializeField] private float xLimit;
     [SerializeField] private float zLimit;
 
@@ -23,6 +25,7 @@ public class DrunkBehaviour : MonoBehaviour
 
     bool canMove = true;
     bool destinationSet = false;
+    bool destinationSetCooldownComplete = false;
     bool returnToOriginalPos = false;
 
     [SerializeField] int animationFrames;
@@ -51,35 +54,46 @@ public class DrunkBehaviour : MonoBehaviour
                 SetRandomDestinationOrReturnToOriginalPosition();
                 agent.isStopped = true;
                 destinationSet = true;
+                timeWhenDestinationSet = Time.time;
             }
-            // Move to random pos
-            if (timeSinceMoved > moveCooldown && !returnToOriginalPos)
+            // Warning Finished
+            if (Time.time > timeWhenDestinationSet + 2f)
             {
-                StartCoroutine(MoveEnemy(ConvertToClosestDirection(agent.destination)));
+                dangerMarker.dangerImminent = false;
+                // Move to random pos
+                if (timeSinceMoved > moveCooldown && !returnToOriginalPos)
+                {
+                    StartCoroutine(MoveEnemy(ConvertToClosestDirection(agent.destination)));
+                }
+                else
+                {
+                    timeSinceMoved += Time.deltaTime;
+                }
+                // Return to original pos
+                if (returnToOriginalPos == true && Vector3.Distance(transform.position, originalPosition) < 0.1f)
+                {
+                    elapsedTime = 0.0f;
+                    returnToOriginalPos = false;
+                    destinationSet = false;
+                    canMove = true;
+                }
+                else if (timeSinceMoved > moveCooldown && returnToOriginalPos)
+                {
+                    Vector3 directionToOriginal = (originalPosition - transform.position).normalized;
+                    Vector3 roundedDirection = ConvertToClosestDirection(directionToOriginal);
+                    agent.destination = transform.position + roundedDirection;
+                    print("return");
+                    StartCoroutine(MoveEnemy(roundedDirection));
+                }
+                else if (timeSinceMoved < moveCooldown)
+                {
+                    timeSinceMoved += Time.deltaTime;
+                }
             }
-            else
+            else // Show warning
             {
-                timeSinceMoved += Time.deltaTime;
-            }
-            // Return to original pos
-            if (returnToOriginalPos == true && Vector3.Distance(transform.position, originalPosition) < 0.1f)
-            {
-                elapsedTime = 0.0f;
-                returnToOriginalPos = false;
-                destinationSet = false;
-                canMove = true;
-            }
-            else if (timeSinceMoved > moveCooldown && returnToOriginalPos)
-            {
-                Vector3 directionToOriginal = (originalPosition - transform.position).normalized;
-                Vector3 roundedDirection = ConvertToClosestDirection(directionToOriginal);
-                agent.destination = transform.position + roundedDirection;
-                print("return");
-                StartCoroutine(MoveEnemy(roundedDirection));
-            }
-            else if (timeSinceMoved < moveCooldown)
-            {
-                timeSinceMoved += Time.deltaTime;
+                dangerMarker.transform.position = transform.position + ConvertToClosestDirection(agent.destination);
+                dangerMarker.dangerImminent = true;
             }
         }
     }
