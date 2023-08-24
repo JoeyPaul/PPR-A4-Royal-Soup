@@ -1,6 +1,7 @@
 using Cinemachine.Utility;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -40,6 +41,9 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     [SerializeField] float invincibilityDuration = 1f;
     private bool currentlyInvincible = false;
     private float timeInvincible = 0.0f;
+
+    private bool hasInputted;
+    private Vector3 queuedInput;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -90,8 +94,8 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         if (soupAmount <= 0)
             SceneManagerScript.ChangeScene("ResultsScene");
 
-        if (!canMove)
-            return;
+        //if (!canMove)
+        //    return;
 
         // On trigger (got hit by enemy) invincibility timer and reset condition.
         if (currentlyInvincible)
@@ -173,8 +177,17 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     // I simplified the WASD movement into one function which is now called by the PlayerPointerBehaviour script whenever the player clicks on a pointer.
     public IEnumerator MovePlayer(Vector3 moveDirection, bool completeTurn)
     {
+        if (hasInputted && queuedInput == Vector3.zero)
+        {
+            print("Queued");
+            queuedInput = moveDirection;
+            yield break;
+        }
+
+        
         if (!Physics.Raycast(transform.position, moveDirection, 1, obstacleLayer) && canMove)
         {
+            hasInputted = true;
             canMove = false;
             prevDir = moveDirection;
             spriteDirectionTrans.localRotation = Quaternion.LookRotation(moveDirection);
@@ -195,6 +208,12 @@ public class TurnBasedPlayerMovement : MonoBehaviour
             //    //game.currentTurn += 1;
             //}
             canMove = true;
+            hasInputted = false;
+            if (queuedInput != Vector3.zero)
+            {
+                StartCoroutine(MovePlayer(queuedInput, true));
+                queuedInput = Vector3.zero;
+            }
         }
     }
 
