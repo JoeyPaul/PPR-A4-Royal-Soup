@@ -60,6 +60,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
         {
             if (!currentlyInvincible)
             {
+                SoundManager.PlaySound(0, 2);
                 Vector3 direction = (transform.position - other.transform.position).normalized;
                 if (direction.Abs().x > direction.Abs().z)
                 {
@@ -199,13 +200,16 @@ public class TurnBasedPlayerMovement : MonoBehaviour
             Vector3 nextPos = transform.position + moveDirection;
             //xLean = IncreaseLean(xLean, -(int)moveDirection.z);
             //zLean = IncreaseLean(zLean, (int)moveDirection.x);
+            SoundManager.PlaySound("Click Hit");
             for (int i = 0; i < frames; i++)
             {
                 transform.position = Vector3.Lerp(startPos, nextPos, i / (float)frames);
+                print(animLength / frames);
                 yield return new WaitForSeconds(animLength / frames);
             }
             transform.position = nextPos;
             Instantiate(stepParticle, particleSpawnTransform.position, Quaternion.identity);
+
             //if(completeTurn)
             //{
             //    EnemyMovement.MoveEnemies();
