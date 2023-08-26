@@ -82,7 +82,7 @@ public class DrunkBehaviour : MonoBehaviour
                     Vector3 directionToOriginal = (originalPosition - transform.position).normalized;
                     Vector3 roundedDirection = ConvertToClosestDirection(directionToOriginal);
                     agent.destination = transform.position + roundedDirection;
-                    print("return");
+                    //print("return");
                     StartCoroutine(MoveEnemy(roundedDirection));
                 }
                 else if (timeSinceMoved < moveCooldown)
@@ -110,7 +110,7 @@ public class DrunkBehaviour : MonoBehaviour
     {
         if (elapsedTime > waitTime && elapsedTime < waitTime + wanderTime)
         {
-            print("set random destination vector");
+            //print("set random destination vector");
             agent.destination = new Vector3(Random.Range(-xLimit, xLimit), 0, Random.Range(-zLimit, zLimit));
         }
         else if (elapsedTime > waitTime + wanderTime) // reset condition
