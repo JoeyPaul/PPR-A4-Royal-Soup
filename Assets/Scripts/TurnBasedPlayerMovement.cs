@@ -45,6 +45,9 @@ public class TurnBasedPlayerMovement : MonoBehaviour
     private bool hasInputted;
     private Vector3 queuedInput;
 
+    [SerializeField] GameObject stepParticle;
+    [SerializeField] Transform particleSpawnTransform;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Destination"))
@@ -202,6 +205,7 @@ public class TurnBasedPlayerMovement : MonoBehaviour
                 yield return new WaitForSeconds(animLength / frames);
             }
             transform.position = nextPos;
+            Instantiate(stepParticle, particleSpawnTransform.position, Quaternion.identity);
             //if(completeTurn)
             //{
             //    EnemyMovement.MoveEnemies();
